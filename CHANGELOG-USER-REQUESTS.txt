@@ -1,0 +1,23 @@
+Peekapoo Zone Puppies invoice app - private access hardening
+
+- Kept the invoice dashboard, invoice data, folder names, customer names, puppy names, and amounts hidden until the login flow completes.
+- Changed locked-page CSS to hide every page element except the authentication gate (fail-closed behavior).
+- Disabled persistent Supabase browser sessions so refresh/reopen requires login again.
+- Updated Supabase SQL to revoke PUBLIC and anon privileges and grant table access only to authenticated users.
+- Retained Row Level Security policies requiring auth.uid() for SELECT, INSERT, and UPDATE.
+- Did not add DELETE permission; folder deletion remains non-destructive to invoices.
+
+Security qualification: email OTP remains a client-side login gate in this build, not backend-enforced Supabase MFA. See SETUP-NOTES.txt.
+
+
+2026-11-05: Added Forgot password? and Change password actions to the sign-in screen. Forgot-password email returns to the app password-reset form; change-password on sign-in reauthenticates with the current password before updating. Existing signed-in Change password action remains.
+
+
+2026-11-05: Large backup import fix. Puppy photos are uploaded individually to a private Supabase Storage bucket; shared invoice JSON stores photo paths rather than base64. Import verifies the database row before updating the UI. Run the updated SUPABASE-SETUP.sql in Supabase SQL Editor before deploying this build.
+- Updated main menu date to numeric M/D/YYYY format, increased its size by 20%, and aligned it to the far-left browser edge.
+
+
+2026-11-07: Code review and corrections
+- Disabled persistent Supabase auth sessions so refreshing or reopening the app requires the full sign-in flow again, matching the private-access notes.
+- Removed an accidental literal \\n sequence from the CSS stylesheet.
+- Updated auth comments to accurately describe in-memory session behavior.
